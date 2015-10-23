@@ -1,7 +1,8 @@
 require "toot/auth/version"
 
+require 'toot'
+
 module Toot
   module Auth
-    # Your code goes here...
   end
 end
