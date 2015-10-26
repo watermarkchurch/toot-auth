@@ -4,7 +4,7 @@ module Toot::Auth
     GENERATES_USERNAME = -> (prefix) { prefix + SecureRandom.hex }
     GENERATES_PASSWORD = -> { SecureRandom.hex }
 
-    def call(store_key:, name: "")
+    def call(name: "")
       Credentials.new GENERATES_USERNAME.(name), GENERATES_PASSWORD.()
     end
 

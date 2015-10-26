@@ -19,6 +19,12 @@ RSpec.describe Toot::Auth::ListsCredentials do
       allow(connection).to receive(:hkeys).and_return(["a", "b", "c"])
       expect(described_class.call(store_key: "loc")).to eq(["a", "b", "c"])
     end
+
+    it "defaults store_key to Toot.config.auth_credentials_store_key" do
+      Toot.config.auth_credentials_store_key = "store-key"
+      described_class.call
+      expect(connection).to have_received(:hkeys).with("store-key", any_args)
+    end
   end
 
 end
