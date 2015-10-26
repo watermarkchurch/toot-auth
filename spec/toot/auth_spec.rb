@@ -1,14 +1,15 @@
 require 'spec_helper'
+require 'base64'
 
 RSpec.describe Toot::Auth do
   it 'has a version number' do
     expect(Toot::Auth::VERSION).not_to be nil
   end
 
-  describe "#wrapper" do
+  describe "#service_wrapper" do
     it "returns a Basic Auth wrapped around the passed rack app" do
       expect(Rack::Auth::Basic).to receive(:new).with(:app, "Toot Auth").and_return(:protected_app)
-      expect(Toot::Auth.wrapper(:app)).to eq(:protected_app)
+      expect(Toot::Auth.service_wrapper(:app)).to eq(:protected_app)
     end
 
     it "authenticates against ChecksCredentials object" do
@@ -16,7 +17,7 @@ RSpec.describe Toot::Auth do
         expect(Toot::Auth::ChecksCredentials).to receive(:call).with(hash_including(username: "un", password: "pw"))
         blk.call("un", "pw")
       end
-      Toot::Auth.wrapper(:app)
+      Toot::Auth.service_wrapper(:app)
     end
 
     it "allows setting store_key" do
@@ -25,7 +26,7 @@ RSpec.describe Toot::Auth do
           .to receive(:call).with(username: "un", password: "pw", store_key: "test")
         blk.call("un", "pw")
       end
-      Toot::Auth.wrapper(:app, store_key: "test")
+      Toot::Auth.service_wrapper(:app, store_key: "test")
     end
 
     it "defaults store_key to config value" do
@@ -35,8 +36,20 @@ RSpec.describe Toot::Auth do
           .to receive(:call).with(username: "un", password: "pw", store_key: "test")
         blk.call("un", "pw")
       end
-      Toot::Auth.wrapper(:app)
+      Toot::Auth.service_wrapper(:app)
     end
 
+  end
+
+  describe "#request_wrapper" do
+    it "takes a request object and returns it with basic auth configured" do
+      Toot.config.auth_username = "un"
+      Toot.config.auth_password = "pw"
+
+      req = Net::HTTP::Post.new("/")
+      obj = Toot::Auth.request_wrapper(req)
+      expect(obj).to eq(req)
+      expect(req["Authorization"]).to eq("Basic #{Base64.encode64("un:pw").strip}")
+    end
   end
 end

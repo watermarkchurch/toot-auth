@@ -13,7 +13,7 @@ require 'toot/auth/removes_credentials'
 
 module Toot
   class Config
-    attr_accessor :auth_credentials_store_key
+    attr_accessor :auth_username, :auth_password, :auth_credentials_store_key
 
     def auth_credentials_store_key
       @auth_credentials_store_key ||= [channel_prefix, "toot.auth.credentials_store"].join
@@ -22,10 +22,15 @@ module Toot
 
   module Auth
 
-    def self.wrapper(app, store_key: Toot.config.auth_credentials_store_key)
+    def self.service_wrapper(app, store_key: Toot.config.auth_credentials_store_key)
       Rack::Auth::Basic.new(app, "Toot Auth") do |username, password|
         ChecksCredentials.(username: username, password: password, store_key: store_key)
       end
+    end
+
+    def self.request_wrapper(request)
+      request.basic_auth(Toot.config.auth_username, Toot.config.auth_password)
+      request
     end
 
   end
