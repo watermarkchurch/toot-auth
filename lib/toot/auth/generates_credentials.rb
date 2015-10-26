@@ -5,13 +5,7 @@ module Toot::Auth
     GENERATES_PASSWORD = -> { SecureRandom.hex }
 
     def call(store_key:, name: "")
-      credential = Credentials.new GENERATES_USERNAME.(name), GENERATES_PASSWORD.()
-
-      Toot.redis do |r|
-        r.hset store_key, credential.username, credential.hashed_password
-      end
-
-      credential
+      Credentials.new GENERATES_USERNAME.(name), GENERATES_PASSWORD.()
     end
 
     def self.call(*args)

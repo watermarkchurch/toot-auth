@@ -4,6 +4,7 @@ require 'toot'
 
 require 'toot/auth/credentials'
 
+require 'toot/auth/adds_credentials'
 require 'toot/auth/checks_credentials'
 require 'toot/auth/generates_credentials'
 require 'toot/auth/lists_credentials'
