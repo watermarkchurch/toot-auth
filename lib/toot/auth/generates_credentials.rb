@@ -4,14 +4,8 @@ module Toot::Auth
     GENERATES_USERNAME = -> (prefix) { prefix + SecureRandom.hex }
     GENERATES_PASSWORD = -> { SecureRandom.hex }
 
-    class Credential < Struct.new(:username, :password)
-      def hashed_password
-        OpenSSL::Digest::SHA256.digest(password)
-      end
-    end
-
     def call(store_key:, name: "")
-      credential = Credential.new GENERATES_USERNAME.(name), GENERATES_PASSWORD.()
+      credential = Credentials.new GENERATES_USERNAME.(name), GENERATES_PASSWORD.()
 
       Toot.redis do |r|
         r.hset store_key, credential.username, credential.hashed_password
