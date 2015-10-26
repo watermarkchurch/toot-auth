@@ -35,3 +35,5 @@ module Toot
 
   end
 end
+
+require 'toot/auth/rails' if defined?(Rails)
