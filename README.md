@@ -79,6 +79,6 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/toot-auth.
+Bug reports and pull requests are welcome on GitHub at https://github.com/watermarkchurch/toot-auth.
 
 [1]: https://github.com/watermarkchurch/toot
