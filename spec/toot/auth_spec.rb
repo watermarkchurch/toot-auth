@@ -41,15 +41,15 @@ RSpec.describe Toot::Auth do
 
   end
 
-  describe "#request_wrapper" do
-    it "takes a request object and returns it with basic auth configured" do
+  describe "#install_client_auth" do
+    it "calls #basic_auth on the Faraday connection" do
       Toot.config.auth_username = "un"
       Toot.config.auth_password = "pw"
 
-      req = Net::HTTP::Post.new("/")
-      obj = Toot::Auth.request_wrapper(req)
-      expect(obj).to eq(req)
-      expect(req["Authorization"]).to eq("Basic #{Base64.encode64("un:pw").strip}")
+      expect(Toot.config.http_connection)
+        .to receive(:basic_auth).with("un", "pw")
+
+      Toot::Auth.install_client_auth
     end
   end
 end

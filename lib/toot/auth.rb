@@ -28,11 +28,12 @@ module Toot
       end
     end
 
-    def self.request_wrapper(request)
-      request.basic_auth(Toot.config.auth_username, Toot.config.auth_password)
-      request
+    def self.install_client_auth
+      Toot.config.http_connection.basic_auth(
+        Toot.config.auth_username,
+        Toot.config.auth_password
+      )
     end
-
   end
 end
 
